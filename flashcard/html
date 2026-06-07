@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT英語 クイズ単語帳</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --accent: #00ff88;
+    --accent2: #0088ff;
+    --danger: #ff4466;
+    --text: #e8e8f0;
+    --muted: #6666aa;
+    --border: #2a2a3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(0,255,136,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,136,255,0.05) 0%, transparent 50%);
+  }
+
+  header {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text), var(--muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stats-bar {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .stat-value.correct { color: var(--accent); }
+  .stat-value.wrong { color: var(--danger); }
+  .stat-value.total { color: var(--accent2); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    max-width: 600px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .quiz-card {
+    width: 100%;
+    max-width: 600px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quiz-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .question-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .english-word {
+    font-family: 'Space Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+  }
+
+  .word-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .question-text {
+    font-size: 16px;
+    color: var(--text);
+    opacity: 0.8;
+    margin-top: 12px;
+  }
+
+  .options-grid {
+    width: 100%;
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .option-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: rgba(0,136,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  .option-btn .option-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .option-btn.correct {
+    border-color: var(--accent);
+    background: rgba(0,255,136,0.1);
+    animation: correctPulse 0.4s ease;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--danger);
+    background: rgba(255,68,102,0.1);
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  @keyframes correctPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+
+  .feedback-area {
+    width: 100%;
+    max-width: 600px;
+    min-height: 80px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .feedback-area.show { display: block; }
+
+  .feedback-correct { border-color: var(--accent); }
+  .feedback-wrong { border-color: var(--danger); }
+
+  .feedback-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .feedback-correct .feedback-title { color: var(--accent); }
+  .feedback-wrong .feedback-title { color: var(--danger); }
+
+  .feedback-desc {
+    font-size: 13px;
+    color: var(--text);
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .next-btn {
+    width: 100%;
+    max-width: 600px;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 14px;
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s;
+  }
+
+  .next-btn:hover { opacity: 0.85; }
+  .next-btn.show { display: block; }
+
+  .result-screen {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    display: none;
+  }
+
+  .result-screen.show { display: block; }
+
+  .result-score {
+    font-family: 'Space Mono', monospace;
+    font-size: 72px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 20px 0;
+  }
+
+  .result-message {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .restart-btn {
+    padding: 16px 48px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover {
+    background: rgba(0,255,136,0.1);
+  }
+
+  @media (max-width: 480px) {
+    .english-word { font-size: 28px; }
+    .options-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">// IT English Quiz</div>
+  <h1>IT英語 クイズ単語帳</h1>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-value correct" id="correct-count">0</div>
+    <div class="stat-label">正解</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value wrong" id="wrong-count">0</div>
+    <div class="stat-label">不正解</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value total" id="total-count">0/10</div>
+    <div class="stat-label">問題数</div>
+  </div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+</div>
+
+<div class="quiz-card" id="quiz-card">
+  <div class="question-number" id="question-number">QUESTION 01</div>
+  <div class="english-word" id="english-word">Loading...</div>
+  <div class="word-hint" id="word-hint"></div>
+  <div class="question-text">この単語の意味は？</div>
+</div>
+
+<div class="options-grid" id="options-grid"></div>
+
+<div class="feedback-area" id="feedback-area">
+  <div class="feedback-title" id="feedback-title"></div>
+  <div class="feedback-desc" id="feedback-desc"></div>
+</div>
+
+<button class="next-btn" id="next-btn" onclick="nextQuestion()">NEXT →</button>
+
+<div class="result-screen" id="result-screen">
+  <div class="logo">// RESULT</div>
+  <div class="result-score" id="result-score"></div>
+  <div class="result-message" id="result-message"></div>
+  <button class="restart-btn" onclick="restartQuiz()">RESTART</button>
+</div>
+
+<script>
+const words = [
+  {
+    en: "Authentication",
+    hint: "noun / セキュリティ用語",
+    ja: "認証",
+    desc: "ユーザーやシステムの身元を確認するプロセス。ログイン時にパスワードを入力するのが代表例。CISSPでも頻出！"
+  },
+  {
+    en: "Repository",
+    hint: "noun / Git用語",
+    ja: "リポジトリ（保管庫）",
+    desc: "コードやファイルを管理・保存する場所。GitHubではプロジェクトごとに作成する。"
+  },
+  {
+    en: "Deployment",
+    hint: "noun / DevOps用語",
+    ja: "デプロイ（展開・公開）",
+    desc: "開発したアプリやシステムを本番環境で動かせる状態にすること。"
+  },
+  {
+    en: "Encryption",
+    hint: "noun / セキュリティ用語",
+    ja: "暗号化",
+    desc: "データを読めない形式に変換して保護すること。CISSPの中核概念の一つ。"
+  },
+  {
+    en: "Firewall",
+    hint: "noun / ネットワーク用語",
+    ja: "ファイアウォール",
+    desc: "ネットワークへの不正なアクセスを防ぐセキュリティシステム。"
+  },
+  {
+    en: "Vulnerability",
+    hint: "noun / セキュリティ用語",
+    ja: "脆弱性",
+    desc: "システムやソフトウェアのセキュリティ上の弱点。攻撃者に悪用される可能性がある。"
+  },
+  {
+    en: "Bandwidth",
+    hint: "noun / ネットワーク用語",
+    ja: "帯域幅（通信速度の最大量）",
+    desc: "ネットワークが一定時間内に転送できるデータ量のこと。"
+  },
+  {
+    en: "Latency",
+    hint: "noun / ネットワーク用語",
+    ja: "遅延",
+    desc: "データが送信されてから受信されるまでの時間。ゲームや通話では重要な指標。"
+  },
+  {
+    en: "Scalability",
+    hint: "noun / システム設計用語",
+    ja: "拡張性",
+    desc: "システムの負荷が増えた時に、性能を維持しながら規模を拡大できる能力。"
+  },
+  {
+    en: "Authorization",
+    hint: "noun / セキュリティ用語",
+    ja: "認可（権限付与）",
+    desc: "認証済みのユーザーが、何にアクセスできるかを決めること。AuthenticationとAuthorizationは別物！"
+  }
+];
+
+let currentIndex = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let shuffledWords = [];
+let answered = false;
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function getWrongOptions(correctWord) {
+  const others = words.filter(w => w.en !== correctWord.en);
+  return shuffle(others).slice(0, 3).map(w => w.ja);
+}
+
+function loadQuestion() {
+  answered = false;
+  const word = shuffledWords[currentIndex];
+  
+  document.getElementById('question-number').textContent = 
+    `QUESTION ${String(currentIndex + 1).padStart(2, '0')}`;
+  document.getElementById('english-word').textContent = word.en;
+  document.getElementById('word-hint').textContent = word.hint;
+  document.getElementById('total-count').textContent = 
+    `${currentIndex + 1}/10`;
+  document.getElementById('progress-fill').style.width = 
+    `${(currentIndex / 10) * 100}%`;
+
+  const wrongOptions = getWrongOptions(word);
+  const allOptions = shuffle([word.ja, ...wrongOptions]);
+
+  const labels = ['A', 'B', 'C', 'D'];
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+
+  allOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(opt, word.ja, btn, word);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback-area').className = 'feedback-area';
+  document.getElementById('next-btn').className = 'next-btn';
+}
+
+function selectAnswer(selected, correct, btn, word) {
+  if (answered) return;
+  answered = true;
+
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => {
+    b.disabled = true;
+    if (b.textContent.includes(correct)) {
+      b.classList.add('correct');
+    }
+  });
+
+  const feedbackArea = document.getElementById('feedback-area');
+  const feedbackTitle = document.getElementById('feedback-title');
+  const feedbackDesc = document.getElementById('feedback-desc');
+
+  if (selected === correct) {
+    correctCount++;
+    document.getElementById('correct-count').textContent = correctCount;
+    btn.classList.add('correct');
+    feedbackArea.className = 'feedback-area show feedback-correct';
+    feedbackTitle.textContent = '✓ CORRECT!';
+    feedbackDesc.textContent = word.desc;
+  } else {
+    wrongCount++;
+    document.getElementById('wrong-count').textContent = wrongCount;
+    btn.classList.add('wrong');
+    feedbackArea.className = 'feedback-area show feedback-wrong';
+    feedbackTitle.textContent = '✗ WRONG';
+    feedbackDesc.textContent = `正解は「${correct}」です。\n${word.desc}`;
+  }
+
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= 10) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-card').style.display = 'none';
+  document.getElementById('options-grid').style.display = 'none';
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const pct = Math.round((correctCount / 10) * 100);
+  document.getElementById('result-score').textContent = `${pct}%`;
+
+  let msg = '';
+  if (pct >= 90) msg = '🎉 完璧！CISSPも余裕ですね！';
+  else if (pct >= 70) msg = '👏 よくできました！あと少しで満点！';
+  else if (pct >= 50) msg = '📚 半分クリア！復習してもう一度挑戦！';
+  else msg = '💪 まだまだこれから！繰り返しが大切です！';
+
+  document.getElementById('result-message').textContent = msg;
+  document.getElementById('result-screen').className = 'result-screen show';
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+function restartQuiz() {
+  currentIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  document.getElementById('correct-count').textContent = '0';
+  document.getElementById('wrong-count').textContent = '0';
+  document.getElementById('result-screen').className = 'result-screen';
+  document.getElementById('quiz-card').style.display = 'block';
+  document.getElementById('options-grid').style.display = 'grid';
+  shuffledWords = shuffle(words);
+  loadQuestion();
+}
+
+// Start
+shuffledWords = shuffle(words);
+loadQuestion();
+</script>
+</body>
+</html>
