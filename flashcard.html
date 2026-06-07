@@ -375,39 +375,129 @@
 const words = [
   {
     en: "Authentication",
-    hint: "noun / セキュリティ用語",
+    hint: "noun / CISSP Domain 5",
     ja: "認証",
     desc: "ユーザーやシステムの身元を確認するプロセス。ログイン時にパスワードを入力するのが代表例。CISSPでも頻出！"
   },
   {
-    en: "Repository",
-    hint: "noun / Git用語",
-    ja: "リポジトリ（保管庫）",
-    desc: "コードやファイルを管理・保存する場所。GitHubではプロジェクトごとに作成する。"
-  },
-  {
-    en: "Deployment",
-    hint: "noun / DevOps用語",
-    ja: "デプロイ（展開・公開）",
-    desc: "開発したアプリやシステムを本番環境で動かせる状態にすること。"
+    en: "Authorization",
+    hint: "noun / CISSP Domain 5",
+    ja: "認可（権限付与）",
+    desc: "認証済みのユーザーが、何にアクセスできるかを決めること。AuthenticationとAuthorizationは別物！"
   },
   {
     en: "Encryption",
-    hint: "noun / セキュリティ用語",
+    hint: "noun / CISSP Domain 3",
     ja: "暗号化",
     desc: "データを読めない形式に変換して保護すること。CISSPの中核概念の一つ。"
   },
   {
+    en: "Vulnerability",
+    hint: "noun / CISSP Domain 6",
+    ja: "脆弱性",
+    desc: "システムやソフトウェアのセキュリティ上の弱点。攻撃者に悪用される可能性がある。"
+  },
+  {
     en: "Firewall",
-    hint: "noun / ネットワーク用語",
+    hint: "noun / CISSP Domain 4",
     ja: "ファイアウォール",
     desc: "ネットワークへの不正なアクセスを防ぐセキュリティシステム。"
   },
   {
-    en: "Vulnerability",
-    hint: "noun / セキュリティ用語",
-    ja: "脆弱性",
-    desc: "システムやソフトウェアのセキュリティ上の弱点。攻撃者に悪用される可能性がある。"
+    en: "Confidentiality",
+    hint: "noun / CISSP CIA Triad",
+    ja: "機密性",
+    desc: "許可された人だけが情報にアクセスできること。CISSPのCIA三原則の「C」。"
+  },
+  {
+    en: "Integrity",
+    hint: "noun / CISSP CIA Triad",
+    ja: "完全性",
+    desc: "データが正確で改ざんされていないことを保証すること。CIA三原則の「I」。"
+  },
+  {
+    en: "Availability",
+    hint: "noun / CISSP CIA Triad",
+    ja: "可用性",
+    desc: "必要な時にシステムやデータが使える状態であること。CIA三原則の「A」。"
+  },
+  {
+    en: "Risk Assessment",
+    hint: "noun / CISSP Domain 1",
+    ja: "リスク評価",
+    desc: "組織が直面するリスクを識別・分析・評価するプロセス。CISSPドメイン1の核心。"
+  },
+  {
+    en: "Threat",
+    hint: "noun / CISSP Domain 1",
+    ja: "脅威",
+    desc: "システムや組織に害を与える可能性のある事象や行為。Vulnerability（脆弱性）とセットで覚える。"
+  },
+  {
+    en: "Penetration Testing",
+    hint: "noun / CISSP Domain 6",
+    ja: "侵入テスト",
+    desc: "実際の攻撃者の手法を使ってシステムの弱点を見つけるテスト。略してPen Test。"
+  },
+  {
+    en: "Social Engineering",
+    hint: "noun / CISSP Domain 1",
+    ja: "ソーシャルエンジニアリング",
+    desc: "技術的な手法ではなく、人間の心理を利用して情報を騙し取る攻撃手法。フィッシングが代表例。"
+  },
+  {
+    en: "Incident Response",
+    hint: "noun / CISSP Domain 7",
+    ja: "インシデント対応",
+    desc: "セキュリティ事故が発生した時の対処手順。準備→検知→封じ込め→復旧→教訓の流れ。"
+  },
+  {
+    en: "Access Control",
+    hint: "noun / CISSP Domain 5",
+    ja: "アクセス制御",
+    desc: "誰がどのリソースにアクセスできるかを管理する仕組み。最小権限の原則が重要。"
+  },
+  {
+    en: "Cryptography",
+    hint: "noun / CISSP Domain 3",
+    ja: "暗号技術",
+    desc: "情報を安全に保護するための数学的な手法の総称。対称・非対称暗号がある。"
+  },
+  {
+    en: "Non-repudiation",
+    hint: "noun / CISSP Domain 3",
+    ja: "否認防止",
+    desc: "送信者が後から「送っていない」と否定できないようにすること。デジタル署名で実現。"
+  },
+  {
+    en: "Business Continuity",
+    hint: "noun / CISSP Domain 7",
+    ja: "事業継続",
+    desc: "災害や障害が発生しても事業を継続できるよう計画・準備すること。BCP（Business Continuity Plan）とも呼ぶ。"
+  },
+  {
+    en: "Phishing",
+    hint: "noun / CISSP Domain 1",
+    ja: "フィッシング",
+    desc: "偽のメールやWebサイトで個人情報を騙し取る攻撃。ソーシャルエンジニアリングの一種。"
+  },
+  {
+    en: "Malware",
+    hint: "noun / CISSP Domain 7",
+    ja: "マルウェア（悪意あるソフトウェア）",
+    desc: "ウイルス・トロイの木馬・ランサムウェアなど、悪意を持って作られたソフトウェアの総称。"
+  },
+  {
+    en: "Zero-Day",
+    hint: "noun / CISSP Domain 6",
+    ja: "ゼロデイ（未知の脆弱性攻撃）",
+    desc: "開発者がまだ把握していない脆弱性を狙った攻撃。パッチが存在しないため特に危険。"
+  },
+  {
+    en: "Scalability",
+    hint: "noun / システム設計用語",
+    ja: "拡張性",
+    desc: "システムの負荷が増えた時に、性能を維持しながら規模を拡大できる能力。"
   },
   {
     en: "Bandwidth",
@@ -422,16 +512,16 @@ const words = [
     desc: "データが送信されてから受信されるまでの時間。ゲームや通話では重要な指標。"
   },
   {
-    en: "Scalability",
-    hint: "noun / システム設計用語",
-    ja: "拡張性",
-    desc: "システムの負荷が増えた時に、性能を維持しながら規模を拡大できる能力。"
+    en: "Repository",
+    hint: "noun / Git用語",
+    ja: "リポジトリ（保管庫）",
+    desc: "コードやファイルを管理・保存する場所。GitHubではプロジェクトごとに作成する。"
   },
   {
-    en: "Authorization",
-    hint: "noun / セキュリティ用語",
-    ja: "認可（権限付与）",
-    desc: "認証済みのユーザーが、何にアクセスできるかを決めること。AuthenticationとAuthorizationは別物！"
+    en: "Deployment",
+    hint: "noun / DevOps用語",
+    ja: "デプロイ（展開・公開）",
+    desc: "開発したアプリやシステムを本番環境で動かせる状態にすること。"
   }
 ];
 
@@ -459,9 +549,9 @@ function loadQuestion() {
   document.getElementById('english-word').textContent = word.en;
   document.getElementById('word-hint').textContent = word.hint;
   document.getElementById('total-count').textContent = 
-    `${currentIndex + 1}/10`;
+    `${currentIndex + 1}/20`;
   document.getElementById('progress-fill').style.width = 
-    `${(currentIndex / 10) * 100}%`;
+    `${(currentIndex / 20) * 100}%`;
 
   const wrongOptions = getWrongOptions(word);
   const allOptions = shuffle([word.ja, ...wrongOptions]);
@@ -519,7 +609,7 @@ function selectAnswer(selected, correct, btn, word) {
 
 function nextQuestion() {
   currentIndex++;
-  if (currentIndex >= 10) {
+  if (currentIndex >= 20) {
     showResult();
   } else {
     loadQuestion();
@@ -532,7 +622,7 @@ function showResult() {
   document.getElementById('feedback-area').style.display = 'none';
   document.getElementById('next-btn').style.display = 'none';
 
-  const pct = Math.round((correctCount / 10) * 100);
+  const pct = Math.round((correctCount / 20) * 100);
   document.getElementById('result-score').textContent = `${pct}%`;
 
   let msg = '';
